@@ -6,10 +6,12 @@ import type { Product } from '@/api/products/types';
 
 interface ProductCardProps {
   product: Product;
+  viewMode: 'list' | 'grid';
 }
 
-function ProductCard({ product }: ProductCardProps) {
-  // 할인가 계산
+function ProductCard({ product, viewMode }: ProductCardProps) {
+  const isGridMode = viewMode === 'grid';
+
   const discountedPrice = product.price * (1 - product.discountPercentage / 100);
   const formattedPrice = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -18,20 +20,25 @@ function ProductCard({ product }: ProductCardProps) {
     maximumFractionDigits: 0,
   }).format(discountedPrice);
 
-  // 리뷰 수 계산
   const reviewCount = product.reviews?.length || 0;
 
   return (
     <article
-      className="rounded-xl border border-gray-100 overflow-hidden bg-white transition-all duration-200 hover:shadow-md"
+      className={`rounded-xl border border-gray-100 overflow-hidden bg-white transition-all duration-200 hover:shadow-md ${
+        isGridMode ? 'hover:translate-y-[-4px]' : 'flex sm:flex-row'
+      }`}
       aria-labelledby={`product-title-${product.id}`}
     >
-      <div className="aspect-square relative overflow-hidden group">
+      <div
+        className={`${isGridMode ? 'aspect-square' : 'w-full sm:w-1/3 h-48 sm:h-auto'} relative overflow-hidden group`}
+      >
         <Image
           src={product.thumbnail}
           alt={product.title}
           fill
-          sizes={'(max-width: 640px) 100vw, (max-width: 640px) 100vw, 33vw'}
+          sizes={
+            isGridMode ? '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw' : '(max-width: 640px) 100vw, 33vw'
+          }
           className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
           priority={product.id <= 8}
           loading={product.id > 8 ? 'lazy' : undefined}
@@ -44,7 +51,7 @@ function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </div>
-      <div className={`p-5`}>
+      <div className={`p-5 ${isGridMode ? '' : 'flex-1'}`}>
         <div className="text-xs font-medium text-gray-400 mb-1">{product.brand}</div>
         <h2 id={`product-title-${product.id}`} className="font-bold text-xl mb-1 text-gray-800 truncate">
           {product.title}

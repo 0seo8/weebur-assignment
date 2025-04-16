@@ -3,7 +3,9 @@ import { Suspense } from 'react';
 import { getProducts } from '@/api/products';
 import type { ProductResponse } from '@/api/products/types';
 import ProductListView from '@/app/product-list/_components/product-list-view';
+import ViewModeToggle from '@/app/product-list/_components/view-modal-toggle';
 import SearchForm from '@/components/ui/search-form';
+import { ProductSkeleton } from '@/components/ui/skeleton';
 
 export default async function Page() {
   const initialData: ProductResponse = await getProducts({
@@ -45,15 +47,14 @@ export default async function Page() {
                 <span>개의 상품</span>
               </div>
             </div>
-            {/*<ViewModeToggle />*/}
+            <ViewModeToggle />
           </div>
         </div>
 
         <Suspense
           fallback={
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {/* TODO 스켈레톤 */}
-              {/* <ProductListSkeleton viewMode="grid" count={8} /> */}
+              <ProductSkeleton viewMode="grid" />
             </div>
           }
         >

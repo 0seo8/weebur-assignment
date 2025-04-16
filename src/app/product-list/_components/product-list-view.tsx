@@ -7,6 +7,7 @@ import { useInfiniteProducts } from '@/api/products/hooks';
 import type { InfiniteProductResponse } from '@/api/products/hooks';
 import type { Product } from '@/api/products/types';
 import { ProductGrid } from '@/app/product-list/_components/product-grid';
+import ViewModeToggle from '@/app/product-list/_components/view-modal-toggle';
 import { ProductSkeleton } from '@/components/ui/skeleton';
 import useViewMode from '@/hooks/use-view-mode';
 
@@ -90,16 +91,16 @@ export default function ProductList({ initialData }: ProductListProps) {
               d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
             />
           </svg>
-          <h2 className="text-lg font-medium">Connection Error</h2>
+          <h2 className="text-lg font-medium">연결 오류</h2>
         </div>
         <p className="text-gray-600 mb-5">
-          {error instanceof Error ? error.message : 'Failed to connect to the server. Please check your network.'}
+          {error instanceof Error ? error.message : '서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.'}
         </p>
         <button
           onClick={() => refetch()}
           className="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
         >
-          Retry
+          다시 시도
         </button>
       </div>
     );
@@ -140,15 +141,36 @@ export default function ProductList({ initialData }: ProductListProps) {
               d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
             />
           </svg>
-          <h2 className="text-lg font-medium">No Results Found</h2>
+          <h2 className="text-lg font-medium">일치하는 결과가 없습니다</h2>
         </div>
-        <p className="text-gray-600">Try a different search term.</p>
+        <p className="text-gray-600">다른 검색어를 시도해보세요.</p>
       </div>
     );
   }
 
   return (
     <div>
+      <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6 shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="text-sm text-gray-600" id="products-info">
+            {query ? (
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-gray-800">{data?.pages[0]?.total || 0}</span>
+                <span>개의 검색 결과</span>
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-xs font-medium">{query}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span>총</span>
+                <span className="font-medium text-gray-800">{data?.pages[0]?.total || 0}</span>
+                <span>개의 상품</span>
+              </div>
+            )}
+          </div>
+          <ViewModeToggle />
+        </div>
+      </div>
+
       <ProductGrid products={products} viewMode={viewMode} />
       {isFetchingNextPage && (
         <div className="flex justify-center mt-8 py-6" aria-live="polite" aria-busy="true">
@@ -167,13 +189,13 @@ export default function ProductList({ initialData }: ProductListProps) {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span>Loading more products...</span>
+            <span>상품을 더 불러오는 중...</span>
           </div>
         </div>
       )}
       {!hasNextPage && hasProducts && (
         <div className="text-center py-8 text-gray-500" aria-live="polite">
-          <p className="text-sm font-medium">No more products to load.</p>
+          <p className="text-sm font-medium">더 이상 불러올 수 없습니다.</p>
         </div>
       )}
       <div ref={loadMoreRef} className="h-4" aria-hidden="true"></div>

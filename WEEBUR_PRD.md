@@ -165,26 +165,26 @@ interface ProductResponse {
 - [x] sort API를 활용한 별점 내림차순 정렬 기능
 - 필터 구현:
   - [x] form 사용
-  - [ ] 검색 버튼 존재 - 추가 필요
+  - [x] 검색 버튼 존재 - 추가 필요
   - [x] 페이지 새로고침 후에도 필터 값 유지
-- [ ] 검색 결과 없을 경우 "일치하는 결과가 없습니다." 문구 표시 - 영어 또는 한글 통일 필요
+- [x] 검색 결과 없을 경우 "일치하는 결과가 없습니다." 문구 표시 - 영어 또는 한글 통일 필요
 
 #### 무한 스크롤
 - [x] 페이지 하단 도달 시 다음 20개 아이템 자동 로드
 - [x] 필터 결과에도 무한 스크롤 적용
-- [ ] 마지막 데이터까지 로딩 시 "더 이상 불러올 수 없습니다." 문구 표시 - 영어 또는 한글 통일 필요
+- [x] 마지막 데이터까지 로딩 시 "더 이상 불러올 수 없습니다." 문구 표시 - 영어 또는 한글 통일 필요
 
 ### 추가 개선사항
 
 #### UI/UX 개선
-- [ ] 모든 텍스트 영어 또는 한글 통일 작업:
-  - [ ] "No Results Found" → "일치하는 결과가 없습니다."
-  - [ ] "Try a different search term." → "다른 검색어를 시도해보세요."
-  - [ ] "Loading more products..." → "상품을 더 불러오는 중..."
-  - [ ] "No more products to load." → "더 이상 불러올 수 없습니다."
-  - [ ] "Connection Error" → "연결 오류"
-  - [ ] "Retry" → "다시 시도"
-  - [ ] "Failed to connect to the server..." → "서버에 연결할 수 없습니다..."
+- [x] 모든 텍스트 영어 또는 한글 통일 작업:
+  - [x] "No Results Found" → "일치하는 결과가 없습니다."
+  - [x] "Try a different search term." → "다른 검색어를 시도해보세요."
+  - [x] "Loading more products..." → "상품을 더 불러오는 중..."
+  - [x] "No more products to load." → "더 이상 불러올 수 없습니다."
+  - [x] "Connection Error" → "연결 오류"
+  - [x] "Retry" → "다시 시도"
+  - [x] "Failed to connect to the server..." → "서버에 연결할 수 없습니다..."
 
 #### 성능 최적화
 - [ ] 이미지 로딩 최적화

@@ -2,6 +2,7 @@
 
 import type { HTMLAttributes } from 'react';
 
+import useViewMode from '@/hooks/use-view-mode';
 import { cn } from '@/utils/cn';
 
 export function Skeleton({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
@@ -50,3 +51,20 @@ export const ProductSkeleton = ({ viewMode }: ProductSkeletonProps) => {
     </div>
   );
 };
+export function ProductSkeletonWrapper({ itemCount = 8 }: { itemCount?: number }) {
+  const { viewMode } = useViewMode();
+
+  return (
+    <div
+      className={
+        viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'space-y-4'
+      }
+      aria-label="상품 로딩 중"
+      aria-busy="true"
+    >
+      {Array.from({ length: itemCount }).map((_, i) => (
+        <ProductSkeleton key={i} viewMode={viewMode} />
+      ))}
+    </div>
+  );
+}

@@ -4,7 +4,6 @@ import { getProducts } from '@/api/products';
 import type { ProductResponse } from '@/api/products/types';
 import ProductListView from '@/app/product-list/_components/product-list-view';
 import SearchForm from '@/app/product-list/_components/search-form';
-import { ProductSkeletonWrapper } from '@/components/ui/skeleton';
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string; sort?: string }> }) {
   const params = await searchParams;
@@ -33,7 +32,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
   return (
     <>
       <SearchForm currentPath="/product-list" />
-      <Suspense fallback={<ProductSkeletonWrapper itemCount={12} />}>
+      <Suspense fallback={<ProductListView />}>
         <ProductData productsPromise={productsPromise} />
       </Suspense>
     </>

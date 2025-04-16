@@ -1,5 +1,7 @@
 'use client';
-import { useEffect, useRef, useCallback, useMemo, memo } from 'react';
+import { useEffect, useRef, useCallback, useMemo, useTransition } from 'react';
+
+import { useSearchParams } from 'next/navigation';
 
 import { useInfiniteProducts } from '@/api/products/hooks';
 import type { InfiniteProductResponse } from '@/api/products/hooks';
@@ -22,19 +24,16 @@ export interface ProductListProps {
     }>;
     pageParams: number[];
   };
-  searchParams?: {
-    q?: string;
-    sort?: string;
-  };
 }
 
-function ProductListView({ initialData, searchParams }: ProductListProps) {
+function ProductListView({ initialData }: ProductListProps) {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const { viewMode } = useViewMode();
-
-  const query = searchParams?.q || '';
-  const sort = searchParams?.sort === 'rating-desc' ? 'rating-desc' : undefined;
+  const searchParams = useSearchParams();
+  const query = searchParams?.get('q') || '';
+  const sort = searchParams?.get('sort') === 'rating-desc' ? 'rating-desc' : undefined;
+  const [isPending, startTransition] = useTransition();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError, error, refetch } =
     useInfiniteProducts({
@@ -45,7 +44,9 @@ function ProductListView({ initialData, searchParams }: ProductListProps) {
 
   useEffect(() => {
     if (query || sort) {
-      refetch();
+      startTransition(() => {
+        refetch();
+      });
     }
   }, [query, sort, refetch]);
 
@@ -53,10 +54,12 @@ function ProductListView({ initialData, searchParams }: ProductListProps) {
     (entries: IntersectionObserverEntry[]) => {
       const [entry] = entries;
       if (entry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
+        startTransition(() => {
+          fetchNextPage();
+        });
       }
     },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
+    [fetchNextPage, hasNextPage, isFetchingNextPage, startTransition],
   );
 
   useEffect(() => {
@@ -120,7 +123,7 @@ function ProductListView({ initialData, searchParams }: ProductListProps) {
 
       <ProductGrid products={products} viewMode={viewMode} />
 
-      {isFetchingNextPage && <LoadingIndicator text="상품을 더 불러오는 중..." />}
+      {(isFetchingNextPage || isPending) && <LoadingIndicator text="상품을 더 불러오는 중..." />}
 
       {!hasNextPage && hasProducts && (
         <div className="text-center py-8 text-gray-500" aria-live="polite">
@@ -133,4 +136,4 @@ function ProductListView({ initialData, searchParams }: ProductListProps) {
   );
 }
 
-export default memo(ProductListView);
+export default ProductListView;

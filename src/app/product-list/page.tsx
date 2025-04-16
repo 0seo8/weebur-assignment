@@ -3,7 +3,6 @@ import { Suspense } from 'react';
 import { getProducts } from '@/api/products';
 import type { ProductResponse } from '@/api/products/types';
 import ProductListView from '@/app/product-list/_components/product-list-view';
-import ViewModeToggle from '@/app/product-list/_components/view-modal-toggle';
 import SearchForm from '@/components/ui/search-form';
 import { ProductSkeleton } from '@/components/ui/skeleton';
 
@@ -21,6 +20,7 @@ export default async function Page() {
       'category',
       'thumbnail',
       'tags',
+      'reviews',
     ],
   });
 
@@ -37,19 +37,6 @@ export default async function Page() {
         </header>
 
         <SearchForm currentPath="/product-list" />
-
-        <div className="bg-white rounded-xl border border-gray-100 p-5 mb-6 shadow-sm">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="text-sm text-gray-600" id="products-info">
-              <div className="flex items-center gap-2">
-                <span>총</span>
-                <span className="font-medium text-gray-800">{initialData.products.length}</span>
-                <span>개의 상품</span>
-              </div>
-            </div>
-            <ViewModeToggle />
-          </div>
-        </div>
 
         <Suspense
           fallback={

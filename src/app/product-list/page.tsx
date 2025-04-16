@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { getProducts } from '@/api/products';
 import type { ProductResponse } from '@/api/products/types';
 import ProductListView from '@/app/product-list/_components/product-list-view';
-import SearchForm from '@/components/ui/search-form';
+import SearchForm from '@/app/product-list/_components/search-form';
 import { ProductSkeletonWrapper } from '@/components/ui/skeleton';
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string; sort?: string }> }) {

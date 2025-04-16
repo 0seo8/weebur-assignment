@@ -46,6 +46,7 @@ function ProductListView({ initialData }: ProductListProps) {
     if (query || sort) {
       startTransition(() => {
         refetch();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
   }, [query, sort, refetch]);

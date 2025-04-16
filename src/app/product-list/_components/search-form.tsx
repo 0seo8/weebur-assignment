@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { Search } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 
 import useDebounce from '@/hooks/use-debouce';
 
@@ -18,16 +18,19 @@ export default function SearchForm({ currentPath = '/' }: SearchFormProps) {
 
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [sortByRating, setSortByRating] = useState(searchParams.get('sort') === 'rating-desc');
+  const [isPending, startTransition] = useTransition();
 
   const updateSearchParams = (query: string, sort: boolean) => {
-    const params = new URLSearchParams();
-    if (query) params.set('q', query);
-    if (sort) params.set('sort', 'rating-desc');
+    startTransition(() => {
+      const params = new URLSearchParams();
+      if (query) params.set('q', query);
+      if (sort) params.set('sort', 'rating-desc');
 
-    router.push(`${currentPath}?${params.toString()}`);
+      router.push(`${currentPath}?${params.toString()}`);
+    });
   };
 
-  const debouncedSearch = useDebounce(updateSearchParams, 300);
+  const debouncedSearch = useDebounce(updateSearchParams, 500);
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newQuery = e.target.value;
@@ -67,10 +70,18 @@ export default function SearchForm({ currentPath = '/' }: SearchFormProps) {
         </div>
 
         <button
+          disabled={isPending}
           type="submit"
           className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-3 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-gray-700"
         >
-          검색
+          {isPending ? (
+            <>
+              <Loader2 className="animate-spin h-4 w-4 mr-2" />
+              <span>검색 중</span>
+            </>
+          ) : (
+            '검색'
+          )}
         </button>
 
         <div className="flex items-center">

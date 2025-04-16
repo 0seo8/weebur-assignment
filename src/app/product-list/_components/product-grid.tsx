@@ -1,4 +1,5 @@
 'use client';
+import { memo } from 'react';
 
 import type { Product } from '@/api/products/types';
 import ProductCard from '@/app/product-list/_components/product-card';
@@ -8,7 +9,7 @@ interface ProductGridProps {
   viewMode: 'list' | 'grid';
 }
 
-export default function ProductGrid({ products, viewMode }: ProductGridProps) {
+function ProductGrid({ products, viewMode }: ProductGridProps) {
   return (
     <div
       className={
@@ -24,3 +25,5 @@ export default function ProductGrid({ products, viewMode }: ProductGridProps) {
     </div>
   );
 }
+
+export default memo(ProductGrid);

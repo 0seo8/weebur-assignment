@@ -1,5 +1,7 @@
 'use client';
 
+import { memo } from 'react';
+
 import Image from 'next/image';
 
 import type { Product } from '@/api/products/types';
@@ -93,4 +95,4 @@ function ProductCard({ product, viewMode }: ProductCardProps) {
   );
 }
 
-export default ProductCard;
+export default memo(ProductCard);

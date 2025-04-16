@@ -1,5 +1,10 @@
 import React from 'react';
 
+export const metadata = {
+  title: '상품 리스트 | 위버',
+  description: '다양한 상품들을 탐색하고 검색해보세요. 리스트 뷰와 그리드 뷰로 자유롭게 볼 수 있습니다.',
+};
+
 export default function ProductListLayout({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-gray-50 py-8 px-4 md:px-8">

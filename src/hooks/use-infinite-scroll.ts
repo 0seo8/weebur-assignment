@@ -1,7 +1,7 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const createIntersectionObserver = (callback: IntersectionObserverCallback, rootMargin = '0px 0px 300px 0px') =>
-  new IntersectionObserver(callback, { rootMargin });
+const createIntersectionObserver = (callback: IntersectionObserverCallback, rootMargin = '0px 0px 500px 0px') =>
+  new IntersectionObserver(callback, { rootMargin, threshold: 0.1 });
 
 interface UseInfiniteScrollOptions {
   onLoadMore: () => void;
@@ -18,44 +18,47 @@ export default function useInfiniteScroll({
   resetTrigger,
   rootMargin,
 }: UseInfiniteScrollOptions) {
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
   const targetRef = useRef<HTMLDivElement | null>(null);
-  const [shouldInitObserver, setShouldInitObserver] = useState(true);
+  const hasCalledLoadMore = useRef(false);
 
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry?.isIntersecting && hasNextPage && !isLoading) {
-        onLoadMore();
-      }
-    },
-    [onLoadMore, hasNextPage, isLoading],
-  );
+  const onLoadMoreRef = useRef(onLoadMore);
 
   useEffect(() => {
-    if (resetTrigger) {
-      setShouldInitObserver(true);
+    onLoadMoreRef.current = onLoadMore;
+
+    if (!isLoading) {
+      hasCalledLoadMore.current = false;
     }
-  }, [resetTrigger]);
+  }, [onLoadMore, isLoading]);
 
   useEffect(() => {
-    if (targetRef.current && shouldInitObserver) {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+    if (observer) {
+      observer.disconnect();
+    }
+
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      if (!entry) return;
+
+      if (entry.isIntersecting && hasNextPage && !isLoading && !hasCalledLoadMore.current) {
+        hasCalledLoadMore.current = true;
+        onLoadMoreRef.current();
       }
+    };
 
-      observerRef.current = createIntersectionObserver(handleObserver, rootMargin);
-      observerRef.current.observe(targetRef.current);
-
-      setShouldInitObserver(false);
+    if (targetRef.current) {
+      const newObserver = createIntersectionObserver(handleIntersection, rootMargin);
+      newObserver.observe(targetRef.current);
+      setObserver(newObserver);
     }
 
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
+      if (observer) {
+        observer.disconnect();
       }
     };
-  }, [handleObserver, shouldInitObserver, rootMargin]);
+  }, [targetRef.current, resetTrigger, rootMargin]);
 
   return { targetRef };
 }

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useTransition } from 'react';
+import { useMemo, useTransition, useEffect } from 'react';
 
 import { useSearchParams } from 'next/navigation';
 
@@ -48,15 +48,17 @@ function ProductListView({ initialData }: ProductListProps) {
     useInfiniteProducts(queryOptions);
 
   const handleLoadMore = () => {
-    startTransition(() => {
-      fetchNextPage();
-    });
+    if (!isFetchingNextPage && hasNextPage) {
+      startTransition(() => {
+        fetchNextPage();
+      });
+    }
   };
 
   const { targetRef } = useInfiniteScroll({
     onLoadMore: handleLoadMore,
     hasNextPage: !!hasNextPage,
-    isLoading: isFetchingNextPage,
+    isLoading: isFetchingNextPage || isLoading,
     resetTrigger: queryParams,
   });
 
@@ -98,7 +100,7 @@ function ProductListView({ initialData }: ProductListProps) {
         viewMode={viewMode}
       />
 
-      <div ref={targetRef} className="h-4" aria-hidden="true" data-testid="infinite-scroll-trigger" />
+      <div ref={targetRef} className="h-10" aria-hidden="true" data-testid="infinite-scroll-trigger" />
     </div>
   );
 }

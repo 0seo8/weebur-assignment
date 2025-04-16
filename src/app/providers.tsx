@@ -19,6 +19,10 @@ export default function Providers({ children }: ProvidersProps) {
             gcTime: 1000 * 60 * 10, // 10분
             refetchOnWindowFocus: false,
             retry: 1,
+            throwOnError: true,
+          },
+          mutations: {
+            throwOnError: true,
           },
         },
       }),

@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import type { Product } from '@/api/products/types';
 import ProductCard from '@/app/product-list/_components/product-card';
 
+// Next.js Image 컴포넌트 모킹
 jest.mock('next/image', () => ({
   __esModule: true,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,6 +64,11 @@ describe('ProductCard 컴포넌트', () => {
       },
     ],
   };
+
+  // 각 테스트 이후 정리
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   test('상품 제목이 표시됩니다', () => {
     render(<ProductCard product={mockProduct} viewMode="list" />);
@@ -165,9 +171,59 @@ describe('ProductCard 컴포넌트', () => {
 
   // 이미지 로딩 속성 테스트 - ID가 8보다 큰 경우
   test('ID가 8보다 큰 상품은 lazy 로딩됩니다', () => {
+    // mockProduct의 ID는 이미 14로 8보다 큼
     render(<ProductCard product={mockProduct} viewMode="list" />);
 
     const imageElement = screen.getByTestId('mock-image');
     expect(imageElement).toHaveAttribute('loading', 'lazy');
+  });
+
+  // 브랜드명이 표시되는지 테스트
+  test('브랜드 이름이 표시됩니다', () => {
+    render(<ProductCard product={mockProduct} viewMode="list" />);
+
+    const brandElement = screen.getByText('Knoll');
+    expect(brandElement).toBeInTheDocument();
+  });
+
+  // 할인율 라운딩 테스트
+  test('할인율이 정수로 반올림되어 표시됩니다', () => {
+    render(<ProductCard product={mockProduct} viewMode="list" />);
+
+    // 15.23% → 15% 반올림
+    const discountElement = screen.getByText('15% OFF');
+    expect(discountElement).toBeInTheDocument();
+  });
+
+  // 이미지 alt 속성 테스트
+  test('이미지의 alt 속성이 상품 제목을 사용합니다', () => {
+    render(<ProductCard product={mockProduct} viewMode="list" />);
+
+    const imageElement = screen.getByTestId('mock-image');
+    expect(imageElement).toHaveAttribute('alt', 'Knoll Saarinen Executive Conference Chair');
+  });
+
+  // aria-labelledby 속성 테스트
+  test('상품 카드가 올바른 aria-labelledby 속성을 가집니다', () => {
+    render(<ProductCard product={mockProduct} viewMode="list" />);
+
+    const articleElement = screen.getByRole('article');
+    expect(articleElement).toHaveAttribute('aria-labelledby', 'product-title-14');
+  });
+
+  // 뷰 모드에 따른 이미지 sizes 속성 테스트
+  test('이미지 sizes 속성이 뷰 모드에 따라 올바르게 설정됩니다', () => {
+    // 그리드 모드 렌더링
+    const { unmount: unmountGrid } = render(<ProductCard product={mockProduct} viewMode="grid" />);
+    const gridImageElement = screen.getByTestId('mock-image');
+    expect(gridImageElement).toHaveAttribute('sizes', '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw');
+
+    // 그리드 모드 언마운트
+    unmountGrid();
+
+    // 리스트 모드 렌더링
+    render(<ProductCard product={mockProduct} viewMode="list" />);
+    const listImageElement = screen.getByTestId('mock-image');
+    expect(listImageElement).toHaveAttribute('sizes', '(max-width: 640px) 100vw, 33vw');
   });
 });

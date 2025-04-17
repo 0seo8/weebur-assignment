@@ -2,6 +2,8 @@
 
 위버 프론트엔드 과제 제출 프로젝트입니다. DummyJSON API를 활용한 상품 리스트 페이지 구현입니다.
 
+🔗 **데모:** ([데모](https://weebur-assignment.vercel.app/))
+
 ## 프로젝트 개요
 
 이 프로젝트는 DummyJSON API를 사용해 반응형 상품 리스트 페이지를 구현했습니다. Next.js 15의 App Router와 React Query를 활용해 성능 최적화와 사용자 경험을 극대화했습니다.

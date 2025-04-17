@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { ScrollToTop } from '@/components/ui/scroll-to-top';
+
 export const metadata = {
   title: '상품 리스트 | 위버',
   description: '다양한 상품들을 탐색하고 검색해보세요. 리스트 뷰와 그리드 뷰로 자유롭게 볼 수 있습니다.',
@@ -18,6 +20,7 @@ export default function ProductListLayout({ children }: { children: React.ReactN
           </p>
         </header>
         {children}
+        <ScrollToTop />
       </div>
     </main>
   );

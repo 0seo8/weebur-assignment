@@ -6,10 +6,8 @@ import { useCallback, useEffect, useRef } from 'react';
  * @param delay 지연 시간 (밀리초)
  * @returns 디바운스된 함수
  */
-function useDebounce<T extends (...args: unknown[]) => unknown>(
-  callback: T,
-  delay: number,
-): (...args: Parameters<T>) => void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function useDebounce<Fn extends (...args: any[]) => void>(callback: Fn, delay: number): typeof callback {
   const callbackRef = useRef(callback);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -18,7 +16,7 @@ function useDebounce<T extends (...args: unknown[]) => unknown>(
   }, [callback]);
 
   return useCallback(
-    (...args: Parameters<T>) => {
+    (...args: Parameters<Fn>) => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -28,7 +26,7 @@ function useDebounce<T extends (...args: unknown[]) => unknown>(
       }, delay);
     },
     [delay],
-  );
+  ) as typeof callback;
 }
 
 export default useDebounce;

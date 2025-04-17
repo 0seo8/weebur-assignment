@@ -226,7 +226,7 @@ interface ProductResponse {
 - [ ] 타입 정의 강화
 
 ### 테스트 코드
-- [ ] 무한 스크롤 기능
+- [x] 무한 스크롤 기능
   - 페이지 하단 도달 시 추가 상품 로드 기능
   - 마지막 데이터 로드 후 "더 이상 불러올 수 없습니다" 메시지 표시
   - Intersection Observer API 작동 방식 테스트

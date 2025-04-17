@@ -6,7 +6,10 @@ import { useCallback, useEffect, useRef } from 'react';
  * @param delay 지연 시간 (밀리초)
  * @returns 디바운스된 함수
  */
-function useDebounce<T extends (...args: any[]) => any>(callback: T, delay: number): (...args: Parameters<T>) => void {
+function useDebounce<T extends (...args: unknown[]) => unknown>(
+  callback: T,
+  delay: number,
+): (...args: Parameters<T>) => void {
   const callbackRef = useRef(callback);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 

@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --nsBlue-100: rgb(18,82,242);
+  --nsBlue-100: rgb(18, 82, 242);
 }
 
 @theme inline {
